@@ -1,0 +1,175 @@
+{"name": "Netflix", "description": "A streaming service for watching movies and TV shows on demand over the internet", "quality": 1.0, "category": "entertainment"}
+{"name": "Spotify", "description": "A digital music streaming platform for listening to songs, podcasts, and audio content", "quality": 1.0, "category": "music"}
+{"name": "Discord", "description": "A communication platform for voice, video, and text chat designed for communities and gaming groups", "quality": 1.0, "category": "communication"}
+{"name": "Slack", "description": "A business messaging app for team communication and workplace collaboration", "quality": 1.0, "category": "communication"}
+{"name": "Stripe", "description": "An online payment processing platform for internet businesses", "quality": 1.0, "category": "fintech"}
+{"name": "Twitch", "description": "A live streaming platform primarily for video game streaming and esports", "quality": 1.0, "category": "entertainment"}
+{"name": "Reddit", "description": "A social news aggregation and discussion website with user-created communities", "quality": 1.0, "category": "social"}
+{"name": "Notion", "description": "An all-in-one workspace for notes, documents, project management, and wikis", "quality": 1.0, "category": "productivity"}
+{"name": "Figma", "description": "A collaborative interface design tool for creating user interfaces and prototypes", "quality": 1.0, "category": "design"}
+{"name": "Canva", "description": "An online graphic design platform for creating social media graphics, presentations, and visual content", "quality": 0.95, "category": "design"}
+{"name": "Zoom", "description": "A video conferencing and online meeting platform for businesses and individuals", "quality": 0.9, "category": "communication"}
+{"name": "Tesla", "description": "An electric vehicle and clean energy company making cars, solar panels, and batteries", "quality": 1.0, "category": "automotive"}
+{"name": "Nike", "description": "An athletic footwear and apparel company for sports and fitness", "quality": 1.0, "category": "fashion"}
+{"name": "Adidas", "description": "A sportswear manufacturer making shoes, clothing, and accessories for athletes", "quality": 0.95, "category": "fashion"}
+{"name": "Lululemon", "description": "An athletic apparel company specializing in yoga and workout clothing", "quality": 0.95, "category": "fashion"}
+{"name": "Airbnb", "description": "An online marketplace for short-term lodging and vacation rentals worldwide", "quality": 1.0, "category": "travel"}
+{"name": "Uber", "description": "A ride-hailing platform connecting passengers with drivers through a mobile app", "quality": 1.0, "category": "transportation"}
+{"name": "Lyft", "description": "A ridesharing company offering on-demand transportation via a mobile application", "quality": 0.95, "category": "transportation"}
+{"name": "Venmo", "description": "A mobile payment service for sending and receiving money between friends", "quality": 0.95, "category": "fintech"}
+{"name": "Robinhood", "description": "A commission-free stock trading and investing app for everyday people", "quality": 0.9, "category": "fintech"}
+{"name": "Shopify", "description": "An e-commerce platform for creating and managing online stores", "quality": 0.9, "category": "ecommerce"}
+{"name": "Etsy", "description": "An online marketplace for handmade, vintage, and unique creative goods", "quality": 1.0, "category": "ecommerce"}
+{"name": "Pinterest", "description": "A visual discovery platform for finding and saving creative ideas and inspiration", "quality": 0.9, "category": "social"}
+{"name": "Snapchat", "description": "A multimedia messaging app with disappearing photos and videos", "quality": 0.85, "category": "social"}
+{"name": "Hulu", "description": "A streaming service for watching live and on-demand TV shows and movies", "quality": 0.95, "category": "entertainment"}
+{"name": "Roku", "description": "A streaming device and platform for accessing TV channels and content", "quality": 0.95, "category": "entertainment"}
+{"name": "Sonos", "description": "A wireless home sound system and smart speaker company", "quality": 1.0, "category": "electronics"}
+{"name": "Peloton", "description": "A fitness company offering connected exercise bikes and workout classes", "quality": 0.95, "category": "fitness"}
+{"name": "Duolingo", "description": "A language learning platform with gamified lessons for learning new languages", "quality": 0.9, "category": "education"}
+{"name": "Grammarly", "description": "An AI writing assistant that checks grammar, spelling, and writing style", "quality": 0.85, "category": "productivity"}
+{"name": "Zapier", "description": "An automation tool that connects different web apps and automates workflows", "quality": 0.9, "category": "productivity"}
+{"name": "Asana", "description": "A project management tool for teams to organize and track their work", "quality": 0.95, "category": "productivity"}
+{"name": "Trello", "description": "A visual project management tool using boards, lists, and cards", "quality": 0.95, "category": "productivity"}
+{"name": "Airtable", "description": "A flexible database and spreadsheet hybrid for organizing anything", "quality": 0.9, "category": "productivity"}
+{"name": "Miro", "description": "An online collaborative whiteboard platform for teams to brainstorm visually", "quality": 0.95, "category": "productivity"}
+{"name": "Loom", "description": "A video messaging tool for recording and sharing quick screen recordings", "quality": 0.95, "category": "communication"}
+{"name": "Calendly", "description": "An online scheduling tool for booking meetings without back-and-forth emails", "quality": 0.85, "category": "productivity"}
+{"name": "Twilio", "description": "A cloud communications platform for adding messaging, voice, and video to applications", "quality": 0.95, "category": "developer"}
+{"name": "Vercel", "description": "A cloud platform for deploying and hosting frontend web applications", "quality": 0.95, "category": "developer"}
+{"name": "Supabase", "description": "An open-source backend platform providing databases, auth, and APIs", "quality": 0.85, "category": "developer"}
+{"name": "Plaid", "description": "A fintech infrastructure company connecting apps to users bank accounts", "quality": 0.95, "category": "fintech"}
+{"name": "Brex", "description": "A corporate credit card and financial services company for startups", "quality": 0.95, "category": "fintech"}
+{"name": "Gusto", "description": "A payroll, benefits, and HR platform for small businesses", "quality": 0.95, "category": "business"}
+{"name": "Rippling", "description": "An employee management platform combining HR, IT, and finance", "quality": 0.9, "category": "business"}
+{"name": "Carta", "description": "A platform for managing equity, cap tables, and valuations for companies", "quality": 0.95, "category": "fintech"}
+{"name": "Ramp", "description": "A corporate card and spend management platform for businesses", "quality": 0.95, "category": "fintech"}
+{"name": "Notion", "description": "A connected workspace for notes, docs, and project management", "quality": 1.0, "category": "productivity"}
+{"name": "Coda", "description": "A document platform that combines docs, spreadsheets, and apps in one", "quality": 0.9, "category": "productivity"}
+{"name": "Webflow", "description": "A visual web design platform for building professional websites without code", "quality": 0.85, "category": "design"}
+{"name": "Framer", "description": "A design and prototyping tool for building interactive website designs", "quality": 0.95, "category": "design"}
+{"name": "Linear", "description": "A project management tool for software teams to track issues and sprints", "quality": 0.95, "category": "developer"}
+{"name": "Descript", "description": "A video and podcast editing tool powered by text-based editing", "quality": 0.9, "category": "media"}
+{"name": "Splice", "description": "A music creation platform with samples, loops, and production tools", "quality": 0.95, "category": "music"}
+{"name": "Ableton", "description": "A music production software for creating, recording, and performing music", "quality": 0.95, "category": "music"}
+{"name": "Vimeo", "description": "A video hosting and sharing platform for creators and businesses", "quality": 0.9, "category": "media"}
+{"name": "Squarespace", "description": "A website building platform with designer templates for creating professional sites", "quality": 0.8, "category": "web"}
+{"name": "Wix", "description": "A cloud-based web development platform for creating websites easily", "quality": 0.8, "category": "web"}
+{"name": "Mailchimp", "description": "An email marketing platform for creating and sending newsletters and campaigns", "quality": 0.9, "category": "marketing"}
+{"name": "Buffer", "description": "A social media management tool for scheduling and publishing posts", "quality": 0.9, "category": "marketing"}
+{"name": "Hootsuite", "description": "A social media management platform for scheduling content across multiple networks", "quality": 0.8, "category": "marketing"}
+{"name": "Zendesk", "description": "A customer service software platform for support ticketing and help desks", "quality": 0.85, "category": "business"}
+{"name": "Intercom", "description": "A customer messaging platform for sales, marketing, and support", "quality": 0.85, "category": "business"}
+{"name": "Drift", "description": "A conversational marketing platform for engaging website visitors in real-time", "quality": 0.95, "category": "marketing"}
+{"name": "Gong", "description": "A revenue intelligence platform that analyzes sales conversations", "quality": 0.95, "category": "sales"}
+{"name": "Lattice", "description": "A people management platform for performance reviews and employee engagement", "quality": 0.9, "category": "business"}
+{"name": "Lever", "description": "A talent acquisition suite for recruiting and hiring management", "quality": 0.9, "category": "business"}
+{"name": "Greenhouse", "description": "A hiring and onboarding platform for structured recruitment processes", "quality": 0.85, "category": "business"}
+{"name": "Amplitude", "description": "A product analytics platform for understanding user behavior in digital products", "quality": 0.85, "category": "analytics"}
+{"name": "Mixpanel", "description": "A product analytics tool for tracking user interactions and engagement metrics", "quality": 0.85, "category": "analytics"}
+{"name": "Segment", "description": "A customer data platform for collecting and routing analytics data", "quality": 0.9, "category": "analytics"}
+{"name": "Datadog", "description": "A monitoring and analytics platform for cloud-scale applications", "quality": 0.85, "category": "developer"}
+{"name": "Sentry", "description": "An error tracking and performance monitoring tool for developers", "quality": 0.9, "category": "developer"}
+{"name": "Postman", "description": "An API development platform for building, testing, and documenting APIs", "quality": 0.85, "category": "developer"}
+{"name": "Retool", "description": "A platform for building internal tools and business applications quickly", "quality": 0.9, "category": "developer"}
+{"name": "Algolia", "description": "A search and discovery platform providing fast, relevant search results", "quality": 0.9, "category": "developer"}
+{"name": "Cloudflare", "description": "A web infrastructure and security company providing CDN and DDoS protection", "quality": 0.8, "category": "infrastructure"}
+{"name": "Confluent", "description": "A data streaming platform built on Apache Kafka for real-time data", "quality": 0.85, "category": "developer"}
+{"name": "Databricks", "description": "A unified analytics platform for data engineering and machine learning", "quality": 0.8, "category": "data"}
+{"name": "Snowflake", "description": "A cloud data warehousing platform for storing and analyzing data", "quality": 0.95, "category": "data"}
+{"name": "Palantir", "description": "A data analytics company building software for intelligence and enterprise data analysis", "quality": 0.95, "category": "data"}
+{"name": "Tableau", "description": "A data visualization software for creating interactive dashboards and charts", "quality": 0.9, "category": "data"}
+{"name": "Twitch", "description": "A live video streaming platform focused on gaming and creative content", "quality": 1.0, "category": "entertainment"}
+{"name": "Zillow", "description": "An online real estate marketplace for buying, selling, and renting homes", "quality": 0.9, "category": "realestate"}
+{"name": "Redfin", "description": "A technology-powered real estate brokerage for buying and selling homes", "quality": 0.9, "category": "realestate"}
+{"name": "Opendoor", "description": "A digital platform for buying and selling homes instantly online", "quality": 0.85, "category": "realestate"}
+{"name": "Compass", "description": "A real estate technology company combining agents with an end-to-end platform", "quality": 0.9, "category": "realestate"}
+{"name": "Rivian", "description": "An electric vehicle manufacturer making adventure-focused trucks and SUVs", "quality": 0.95, "category": "automotive"}
+{"name": "Lucid", "description": "A luxury electric vehicle company building high-performance sedans", "quality": 0.95, "category": "automotive"}
+{"name": "Waymo", "description": "A self-driving technology company developing autonomous vehicles", "quality": 0.9, "category": "automotive"}
+{"name": "Cruise", "description": "An autonomous vehicle company building self-driving cars for ride-hailing", "quality": 0.9, "category": "automotive"}
+{"name": "Allbirds", "description": "A sustainable footwear company making comfortable shoes from natural materials", "quality": 0.9, "category": "fashion"}
+{"name": "Glossier", "description": "A beauty brand creating skincare and makeup products with a minimalist approach", "quality": 0.95, "category": "beauty"}
+{"name": "Warby Parker", "description": "An eyewear company selling affordable designer glasses online and in stores", "quality": 0.85, "category": "fashion"}
+{"name": "Casper", "description": "A sleep company selling mattresses and bedding products direct to consumers", "quality": 0.95, "category": "lifestyle"}
+{"name": "Away", "description": "A luggage and travel accessories brand making modern, thoughtful suitcases", "quality": 0.9, "category": "travel"}
+{"name": "Oura", "description": "A health technology company making a smart ring for sleep and activity tracking", "quality": 0.95, "category": "health"}
+{"name": "Whoop", "description": "A fitness wearable company providing performance optimization and recovery tracking", "quality": 0.95, "category": "fitness"}
+{"name": "Strava", "description": "A fitness tracking app and social network for runners and cyclists", "quality": 0.95, "category": "fitness"}
+{"name": "Headspace", "description": "A meditation and mindfulness app for mental health and wellness", "quality": 0.9, "category": "health"}
+{"name": "Calm", "description": "A meditation and sleep app offering guided relaxation and wellness content", "quality": 0.95, "category": "health"}
+{"name": "Hinge", "description": "A dating app designed to be deleted, focused on meaningful relationships", "quality": 0.95, "category": "social"}
+{"name": "Bumble", "description": "A dating app where women make the first move in connecting with matches", "quality": 0.9, "category": "social"}
+{"name": "Depop", "description": "A social shopping app for buying and selling unique fashion and vintage items", "quality": 0.9, "category": "ecommerce"}
+{"name": "Poshmark", "description": "A social commerce platform for buying and selling new and secondhand fashion", "quality": 0.8, "category": "ecommerce"}
+{"name": "Klarna", "description": "A buy-now-pay-later payment service for online shopping", "quality": 0.9, "category": "fintech"}
+{"name": "Chime", "description": "A mobile banking app offering fee-free financial services", "quality": 0.95, "category": "fintech"}
+{"name": "Monzo", "description": "A digital bank offering a mobile-first banking experience with smart budgeting", "quality": 0.95, "category": "fintech"}
+{"name": "Revolut", "description": "A digital banking app for money transfers, currency exchange, and financial management", "quality": 0.85, "category": "fintech"}
+{"name": "Wise", "description": "An international money transfer service with low fees and real exchange rates", "quality": 0.95, "category": "fintech"}
+{"name": "Plaid", "description": "A data network powering fintech and digital finance applications", "quality": 0.95, "category": "fintech"}
+{"name": "Toast", "description": "A restaurant technology platform for point-of-sale and management", "quality": 0.95, "category": "food"}
+{"name": "DoorDash", "description": "A food delivery platform connecting customers with local restaurants", "quality": 0.8, "category": "food"}
+{"name": "Instacart", "description": "A grocery delivery and pickup service from local stores", "quality": 0.8, "category": "food"}
+{"name": "Gopuff", "description": "An instant delivery service for everyday essentials and convenience items", "quality": 0.85, "category": "delivery"}
+{"name": "Flexport", "description": "A freight forwarding and supply chain logistics platform", "quality": 0.85, "category": "logistics"}
+{"name": "Loom", "description": "An async video messaging tool for workplace communication", "quality": 0.95, "category": "communication"}
+{"name": "Figma", "description": "A browser-based collaborative design tool for UI/UX teams", "quality": 1.0, "category": "design"}
+{"name": "Obsidian", "description": "A private knowledge base and note-taking app using linked markdown files", "quality": 0.95, "category": "productivity"}
+{"name": "Raycast", "description": "A blazingly fast productivity launcher and command palette for macOS", "quality": 0.9, "category": "productivity"}
+{"name": "Arc", "description": "A reimagined web browser focused on organization and a beautiful browsing experience", "quality": 0.95, "category": "software"}
+{"name": "Warp", "description": "A modern terminal application reimagined with AI and collaborative features", "quality": 0.95, "category": "developer"}
+{"name": "Cursor", "description": "An AI-powered code editor built for pair programming with artificial intelligence", "quality": 0.9, "category": "developer"}
+{"name": "Replit", "description": "An online coding platform and IDE for building and deploying software in the browser", "quality": 0.85, "category": "developer"}
+{"name": "Render", "description": "A cloud platform for building and running web applications and services", "quality": 0.9, "category": "developer"}
+{"name": "Railway", "description": "An infrastructure platform for deploying applications with zero configuration", "quality": 0.9, "category": "developer"}
+{"name": "Neon", "description": "A serverless Postgres database platform with branching and autoscaling", "quality": 0.95, "category": "developer"}
+{"name": "Turso", "description": "An edge database platform built on libSQL for globally distributed data", "quality": 0.9, "category": "developer"}
+{"name": "Resend", "description": "A modern email API for developers to send transactional emails", "quality": 0.9, "category": "developer"}
+{"name": "Loops", "description": "An email platform built for modern SaaS companies to send marketing emails", "quality": 0.9, "category": "marketing"}
+{"name": "Beehiiv", "description": "A newsletter platform for creators to grow and monetize their audience", "quality": 0.85, "category": "media"}
+{"name": "Substack", "description": "A publishing platform for independent writers to create paid newsletters", "quality": 0.85, "category": "media"}
+{"name": "Ghost", "description": "An open-source publishing platform for professional blogging and newsletters", "quality": 0.95, "category": "media"}
+{"name": "Campfire", "description": "A simple group chat tool for small business team communication", "quality": 0.9, "category": "communication"}
+{"name": "Basecamp", "description": "A project management and team communication tool for running businesses", "quality": 0.85, "category": "productivity"}
+{"name": "Roam", "description": "A note-taking tool for networked thought with bidirectional links", "quality": 0.9, "category": "productivity"}
+{"name": "Craft", "description": "A beautiful document and note-taking app for creative professionals", "quality": 0.95, "category": "productivity"}
+{"name": "Things", "description": "A personal task manager for organizing your to-dos and projects", "quality": 0.9, "category": "productivity"}
+{"name": "Todoist", "description": "A task management app for organizing work and personal tasks", "quality": 0.8, "category": "productivity"}
+{"name": "Mercury", "description": "A banking platform designed for startups and technology companies", "quality": 0.95, "category": "fintech"}
+{"name": "Oxide", "description": "A cloud computing company building rack-scale servers for on-premises clouds", "quality": 0.95, "category": "infrastructure"}
+{"name": "Tailscale", "description": "A zero-config VPN and mesh networking tool for secure device connections", "quality": 0.8, "category": "infrastructure"}
+{"name": "Tines", "description": "A security automation platform for building no-code security workflows", "quality": 0.9, "category": "security"}
+{"name": "Snyk", "description": "A developer security platform for finding and fixing code vulnerabilities", "quality": 0.9, "category": "security"}
+{"name": "Vanta", "description": "An automated security compliance platform for SOC 2 and other certifications", "quality": 0.9, "category": "security"}
+{"name": "Drata", "description": "A compliance automation platform for continuous security monitoring", "quality": 0.85, "category": "security"}
+{"name": "Weights", "description": "A machine learning experiment tracking and model versioning platform", "quality": 0.85, "category": "ml"}
+{"name": "Hugging Face", "description": "A platform for sharing and collaborating on machine learning models and datasets", "quality": 0.85, "category": "ml"}
+{"name": "Cohere", "description": "An AI company providing natural language processing models for enterprises", "quality": 0.9, "category": "ml"}
+{"name": "Mistral", "description": "An AI company building efficient open-source large language models", "quality": 0.95, "category": "ml"}
+{"name": "Perplexity", "description": "An AI-powered answer engine that searches the internet and summarizes results", "quality": 0.9, "category": "search"}
+{"name": "Jasper", "description": "An AI content creation platform for marketing copy and brand content", "quality": 0.9, "category": "marketing"}
+{"name": "Midjourney", "description": "An AI art generation tool for creating images from text descriptions", "quality": 0.95, "category": "creative"}
+{"name": "Runway", "description": "An AI creative platform for video editing and generative media tools", "quality": 0.95, "category": "creative"}
+{"name": "Pika", "description": "An AI platform for generating and editing videos from text and images", "quality": 0.9, "category": "creative"}
+{"name": "Lex", "description": "An AI-enhanced writing tool and word processor for long-form content", "quality": 0.9, "category": "productivity"}
+{"name": "Tome", "description": "An AI-powered storytelling and presentation creation tool", "quality": 0.95, "category": "productivity"}
+{"name": "Gamma", "description": "A presentation tool that uses AI to create beautiful slides and documents", "quality": 0.9, "category": "productivity"}
+{"name": "Cleo", "description": "An AI financial assistant chatbot for budgeting and money management", "quality": 0.9, "category": "fintech"}
+{"name": "Nuro", "description": "An autonomous delivery vehicle company for local goods transportation", "quality": 0.95, "category": "delivery"}
+{"name": "Zipline", "description": "A drone delivery company for medical supplies and essential goods", "quality": 0.9, "category": "delivery"}
+{"name": "Scale", "description": "A data labeling and AI infrastructure company for training machine learning models", "quality": 0.85, "category": "ml"}
+{"name": "Weights & Biases", "description": "An ML experiment tracking platform for visualizing and comparing model training", "quality": 0.8, "category": "ml"}
+{"name": "Modal", "description": "A cloud platform for running generative AI, data, and compute-intensive applications", "quality": 0.95, "category": "infrastructure"}
+{"name": "Replicate", "description": "A platform for running open-source machine learning models in the cloud", "quality": 0.85, "category": "ml"}
+{"name": "Anyscale", "description": "A compute platform for scaling AI and Python workloads with Ray", "quality": 0.8, "category": "infrastructure"}
+{"name": "Temporal", "description": "A durable execution platform for building reliable distributed applications", "quality": 0.9, "category": "developer"}
+{"name": "Inngest", "description": "A durable workflow engine for building reliable background jobs and functions", "quality": 0.85, "category": "developer"}
+{"name": "Prefect", "description": "A workflow orchestration tool for building and monitoring data pipelines", "quality": 0.9, "category": "data"}
+{"name": "Dagster", "description": "A data orchestration platform for building and maintaining data assets", "quality": 0.85, "category": "data"}
+{"name": "Fivetran", "description": "An automated data integration platform for syncing data to warehouses", "quality": 0.8, "category": "data"}
+{"name": "Census", "description": "A reverse ETL platform for syncing data from warehouses to business tools", "quality": 0.85, "category": "data"}
+{"name": "Hightouch", "description": "A data activation platform for syncing customer data to marketing tools", "quality": 0.85, "category": "data"}
+{"name": "Hex", "description": "A collaborative data workspace for SQL, Python, and visual analytics", "quality": 0.9, "category": "data"}
+{"name": "Monte Carlo", "description": "A data observability platform for monitoring data quality and reliability", "quality": 0.85, "category": "data"}
+{"name": "Atlan", "description": "A modern data catalog and governance platform for data teams", "quality": 0.9, "category": "data"}

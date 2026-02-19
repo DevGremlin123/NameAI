@@ -1,0 +1,14 @@
+# NameFormer model configuration
+# Fine-tuned Flan-T5-Small (77M params)
+
+base_model: google/flan-t5-small
+prompt_prefix: "Generate a creative brand name for: "
+
+generation:
+  max_new_tokens: 32
+  num_beams: 1
+  do_sample: true
+  temperature: 0.9
+  top_k: 50
+  top_p: 0.92
+  repetition_penalty: 1.2

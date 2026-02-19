@@ -1,0 +1,23 @@
+# Inference configuration
+
+model:
+  checkpoint_path: checkpoints/best
+  device: auto
+
+generation:
+  num_names: 10
+  max_new_tokens: 32
+  num_beams: 1
+  do_sample: true
+  temperature: 0.9
+  top_k: 50
+  top_p: 0.92
+  repetition_penalty: 1.2
+
+filtering:
+  use_blocklist: true
+  blocklist_path: data/curated/slop_blocklist.txt
+  min_pronounceability: 0.4
+  min_phonaesthetic_score: 0.3
+  min_uniqueness: 0.5
+  diversity_threshold: 0.6

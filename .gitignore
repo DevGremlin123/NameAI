@@ -1,0 +1,40 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Data
+data/raw/
+data/processed/
+
+# Model artifacts
+checkpoints/
+*.pt
+*.bin
+*.onnx
+
+# Tokenizer models
+*.model
+*.vocab
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.venv/
+venv/
+
+# Wandb
+wandb/
+
+# Logs
+*.log

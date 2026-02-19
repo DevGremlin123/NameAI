@@ -1,0 +1,35 @@
+# Training configuration
+# Fine-tuning Flan-T5-Small on brand name generation
+
+base_model: google/flan-t5-small
+
+training:
+  epochs: 10
+  batch_size: 32
+  learning_rate: 3.0e-4
+  weight_decay: 0.01
+  warmup_ratio: 0.06
+  bf16: true
+  gradient_accumulation_steps: 1
+  max_grad_norm: 1.0
+  seed: 42
+
+data:
+  train_path: data/processed/train.jsonl
+  val_path: data/processed/val.jsonl
+  max_input_length: 256
+  max_target_length: 32
+  prompt_prefix: "Generate a creative brand name for: "
+
+checkpointing:
+  output_dir: checkpoints
+  save_strategy: steps
+  save_steps: 500
+  save_total_limit: 3
+  load_best_model_at_end: true
+
+logging:
+  wandb_project: nameai
+  logging_steps: 25
+  eval_strategy: steps
+  eval_steps: 250
