@@ -19,9 +19,9 @@ def main() -> None:
 @main.command()
 @click.argument("description")
 @click.option("-n", "--num", default=10, help="Number of names to generate")
-@click.option("--temperature", "-t", default=0.9, help="Sampling temperature")
-@click.option("--top-k", default=50, help="Top-k sampling")
-@click.option("--top-p", default=0.92, help="Nucleus sampling threshold")
+@click.option("--temperature", "-t", default=0.85, help="Sampling temperature")
+@click.option("--top-k", default=40, help="Top-k sampling")
+@click.option("--top-p", default=0.90, help="Nucleus sampling threshold")
 @click.option("--checkpoint", default=None, help="Model checkpoint path")
 @click.option("--inference-config", default="configs/inference.yaml", help="Inference config path")
 def generate(
@@ -36,7 +36,6 @@ def generate(
     """Generate creative brand names for a business description."""
     from nameai.config import load_inference_config
     from nameai.inference.generator import NameGenerator
-    from nameai.model.nameformer import NameFormer
 
     console.print(f"\n[bold]Description:[/bold] {description}\n")
 
@@ -49,8 +48,7 @@ def generate(
         if checkpoint:
             cfg.model.checkpoint_path = checkpoint
 
-        model = NameFormer.from_pretrained(cfg.model.checkpoint_path, device=cfg.model.device)
-        generator = NameGenerator(model, cfg)
+        generator = NameGenerator.from_config(inference_config)
 
     with console.status("[bold green]Generating names..."):
         results = generator.generate(description, num_names=num)
@@ -116,15 +114,22 @@ def score(name: str) -> None:
 @main.command()
 def info() -> None:
     """Show model architecture information."""
-    from nameai.model.nameformer import NameFormer, BASE_MODEL
+    from nameai.model.nameformer import NameFormer
+    from nameai.tokenizer.bpe_tokenizer import BPETokenizer
+    from nameai.tokenizer.char_tokenizer import CharTokenizer
 
-    console.print(f"\n[bold]NameFormer[/bold] (fine-tuned {BASE_MODEL})\n")
+    console.print("\n[bold]NameFormer[/bold] (custom encoder-decoder, trained from scratch)\n")
 
-    model = NameFormer.from_pretrained(BASE_MODEL, device="cpu")
+    char_tok = CharTokenizer()
+    model = NameFormer(enc_vocab_size=16000, dec_vocab_size=char_tok.vocab_size)
     params = model.count_parameters()
-    console.print(f"  Total params:     {params['total']:>12,}")
-    console.print(f"  Trainable params: {params['trainable']:>12,}")
-    console.print(f"  Base model: {BASE_MODEL}\n")
+    console.print(f"  Encoder params: {params['encoder']:>12,}")
+    console.print(f"  Decoder params: {params['decoder']:>12,}")
+    console.print(f"  Total params:   {params['total']:>12,}")
+    console.print(f"\n  Encoder: 10 layers, d=512, BPE input (16K vocab)")
+    console.print(f"  Decoder: 7 layers, d=384, character output ({char_tok.vocab_size} chars)")
+    console.print(f"\n  Phase 1: Wikipedia MLM pre-training (learns English)")
+    console.print(f"  Phase 2: Fine-tune on (description -> brand name) pairs\n")
 
 
 def _score_bar(value: float, width: int = 20) -> str:

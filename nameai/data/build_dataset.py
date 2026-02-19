@@ -1,15 +1,12 @@
-"""Build the training dataset focused on quality over quantity.
+"""Build the training dataset for Phase 2 fine-tuning.
 
-The model (Flan-T5) already knows English. It just needs to learn:
-  "business description in → amazing brand name out"
+The custom NameFormer learns English from Wikipedia pre-training (Phase 1).
+This script builds the (description → brand name) pairs for Phase 2.
 
 Sources:
 1. Our hand-curated iconic brands (~150+, highest quality)
 2. HackerNoon startup dataset (real names + real descriptions)
 3. Any additional data in data/raw/
-
-Target: ~5K-20K high-quality (description, name) pairs.
-No need for millions of rows — the model already understands language.
 
 Usage:
     python -m nameai.data.build_dataset

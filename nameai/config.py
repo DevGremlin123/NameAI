@@ -3,69 +3,43 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Optional
 
 import yaml
 from pydantic import BaseModel
 
 
+class EncoderConfig(BaseModel):
+    vocab_size: int = 16000
+    d_model: int = 512
+    n_heads: int = 8
+    n_layers: int = 10
+    d_ff: int = 2816
+    max_seq_len: int = 512
+
+
+class DecoderConfig(BaseModel):
+    vocab_size: int = 76
+    d_model: int = 384
+    n_heads: int = 6
+    n_layers: int = 7
+    d_ff: int = 1792
+    max_seq_len: int = 64
+
+
 class GenerationConfig(BaseModel):
-    max_new_tokens: int = 32
-    num_beams: int = 1
-    do_sample: bool = True
-    temperature: float = 0.9
-    top_k: int = 50
-    top_p: float = 0.92
-    repetition_penalty: float = 1.2
+    max_length: int = 32
+    temperature: float = 0.85
+    top_k: int = 40
+    top_p: float = 0.90
+    num_candidates: int = 40
+    num_names: int = 10
 
 
 class ModelConfig(BaseModel):
-    base_model: str = "google/flan-t5-small"
-    prompt_prefix: str = "Generate a creative brand name for: "
+    encoder: EncoderConfig = EncoderConfig()
+    decoder: DecoderConfig = DecoderConfig()
+    dropout: float = 0.1
     generation: GenerationConfig = GenerationConfig()
-
-
-class TrainingParams(BaseModel):
-    epochs: int = 10
-    batch_size: int = 32
-    learning_rate: float = 3e-4
-    weight_decay: float = 0.01
-    warmup_ratio: float = 0.06
-    bf16: bool = True
-    gradient_accumulation_steps: int = 1
-    max_grad_norm: float = 1.0
-    seed: int = 42
-
-
-class DataConfig(BaseModel):
-    train_path: str = "data/processed/train.jsonl"
-    val_path: str = "data/processed/val.jsonl"
-    max_input_length: int = 256
-    max_target_length: int = 32
-    prompt_prefix: str = "Generate a creative brand name for: "
-
-
-class CheckpointConfig(BaseModel):
-    output_dir: str = "checkpoints"
-    save_strategy: str = "steps"
-    save_steps: int = 500
-    save_total_limit: int = 3
-    load_best_model_at_end: bool = True
-
-
-class LoggingConfig(BaseModel):
-    wandb_project: str = "nameai"
-    logging_steps: int = 25
-    eval_strategy: str = "steps"
-    eval_steps: int = 250
-
-
-class TrainingConfig(BaseModel):
-    base_model: str = "google/flan-t5-small"
-    training: TrainingParams = TrainingParams()
-    data: DataConfig = DataConfig()
-    checkpointing: CheckpointConfig = CheckpointConfig()
-    logging: LoggingConfig = LoggingConfig()
 
 
 class FilterConfig(BaseModel):
@@ -78,7 +52,8 @@ class FilterConfig(BaseModel):
 
 
 class InferenceModelConfig(BaseModel):
-    checkpoint_path: str = "checkpoints/best"
+    checkpoint_path: str = "checkpoints/best.pt"
+    bpe_model: str = "data/bpe_tokenizer.model"
     device: str = "auto"
 
 
@@ -95,10 +70,6 @@ def load_yaml(path: str | Path) -> dict:
 
 def load_model_config(path: str | Path = "configs/model.yaml") -> ModelConfig:
     return ModelConfig(**load_yaml(path))
-
-
-def load_training_config(path: str | Path = "configs/training.yaml") -> TrainingConfig:
-    return TrainingConfig(**load_yaml(path))
 
 
 def load_inference_config(path: str | Path = "configs/inference.yaml") -> InferenceConfig:

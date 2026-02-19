@@ -1,35 +1,38 @@
-# Training configuration
-# Fine-tuning Flan-T5-Small on brand name generation
+# Training configuration — optimized for RTX 5090 (32GB VRAM)
+# Two-phase: (1) Wikipedia MLM pre-training, (2) name generation fine-tuning
 
-base_model: google/flan-t5-small
+bpe_model: data/bpe_tokenizer.model
 
-training:
-  epochs: 10
-  batch_size: 32
-  learning_rate: 3.0e-4
+# Phase 1: Pre-train encoder on Wikipedia (learns English)
+pretrain:
+  wiki_text: data/wikipedia/wiki_text.txt
+  epochs: 3
+  batch_size: 256              # ~8GB with 512 seq len in BF16
+  learning_rate: 1.0e-3
+  max_len: 512
+  save_path: checkpoints/pretrained.pt
+
+# Phase 2: Fine-tune full model on (description → brand name) pairs
+finetune:
+  pretrained: checkpoints/pretrained.pt
+  train_data: data/processed/train.jsonl
+  val_data: data/processed/val.jsonl
+  epochs: 20
+  batch_size: 256              # Names are short, fits easily
+  learning_rate: 5.0e-4
+  save_dir: checkpoints
+
+optimizer:
   weight_decay: 0.01
-  warmup_ratio: 0.06
-  bf16: true
-  gradient_accumulation_steps: 1
+  betas: [0.9, 0.98]
   max_grad_norm: 1.0
-  seed: 42
 
-data:
-  train_path: data/processed/train.jsonl
-  val_path: data/processed/val.jsonl
-  max_input_length: 256
-  max_target_length: 32
-  prompt_prefix: "Generate a creative brand name for: "
+scheduler:
+  warmup_ratio: 0.1           # 10% of total steps
+  type: cosine                 # Cosine decay to 1% of peak LR
 
-checkpointing:
-  output_dir: checkpoints
-  save_strategy: steps
-  save_steps: 500
-  save_total_limit: 3
-  load_best_model_at_end: true
+precision:
+  bf16: true                   # Native on 5090 / B200
 
 logging:
   wandb_project: nameai
-  logging_steps: 25
-  eval_strategy: steps
-  eval_steps: 250

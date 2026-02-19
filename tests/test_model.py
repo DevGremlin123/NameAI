@@ -1,28 +1,41 @@
-"""Smoke tests for NameFormer (Flan-T5 based)."""
+"""Smoke tests for NameFormer (custom from-scratch architecture)."""
 
 import pytest
+import torch
 
 
-def test_model_loads():
-    from nameai.model.nameformer import NameFormer, BASE_MODEL
-    model = NameFormer.from_pretrained(BASE_MODEL, device="cpu")
+def test_model_builds():
+    from nameai.model.nameformer import NameFormer
+    model = NameFormer(enc_vocab_size=16000, dec_vocab_size=76)
     params = model.count_parameters()
-    assert params["total"] > 0
-    assert params["total"] == params["trainable"]
+    assert params["total"] > 80_000_000  # ~85M params
+    assert params["encoder"] > 0
+    assert params["decoder"] > 0
 
 
-def test_generate_names():
-    from nameai.model.nameformer import NameFormer, BASE_MODEL
-    model = NameFormer.from_pretrained(BASE_MODEL, device="cpu")
-    names = model.generate_names(
-        "A music streaming service",
-        num_return=3,
-        max_length=20,
-    )
-    assert len(names) > 0
-    for name in names:
-        assert isinstance(name, str)
-        assert len(name) > 0
+def test_forward_pass():
+    from nameai.model.nameformer import NameFormer
+    model = NameFormer(enc_vocab_size=1000, dec_vocab_size=76,
+                       enc_n_layers=2, dec_n_layers=2,
+                       enc_d_model=64, dec_d_model=48,
+                       enc_d_ff=128, dec_d_ff=96,
+                       enc_n_heads=4, dec_n_heads=4)
+    src = torch.randint(1, 1000, (2, 16))
+    tgt = torch.randint(1, 76, (2, 8))
+    logits = model(src, tgt)
+    assert logits.shape == (2, 8, 76)
+
+
+def test_mlm_forward():
+    from nameai.model.nameformer import NameFormer
+    model = NameFormer(enc_vocab_size=1000, dec_vocab_size=76,
+                       enc_n_layers=2, dec_n_layers=2,
+                       enc_d_model=64, dec_d_model=48,
+                       enc_d_ff=128, dec_d_ff=96,
+                       enc_n_heads=4, dec_n_heads=4)
+    tokens = torch.randint(1, 1000, (2, 16))
+    logits = model.forward_mlm(tokens)
+    assert logits.shape == (2, 16, 1000)
 
 
 def test_char_tokenizer():

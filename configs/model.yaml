@@ -1,14 +1,27 @@
-# NameFormer model configuration
-# Fine-tuned Flan-T5-Small (77M params)
+# NameFormer model configuration — custom 85M param encoder-decoder
+# Trained from scratch: Wikipedia pre-training → name generation fine-tuning
 
-base_model: google/flan-t5-small
-prompt_prefix: "Generate a creative brand name for: "
+encoder:
+  vocab_size: 16000          # BPE vocab
+  d_model: 512
+  n_heads: 8
+  n_layers: 10
+  d_ff: 2816
+  max_seq_len: 512
+
+decoder:
+  vocab_size: 76             # Character-level
+  d_model: 384
+  n_heads: 6
+  n_layers: 7
+  d_ff: 1792
+  max_seq_len: 64
+
+dropout: 0.1
 
 generation:
-  max_new_tokens: 32
-  num_beams: 1
-  do_sample: true
-  temperature: 0.9
-  top_k: 50
-  top_p: 0.92
-  repetition_penalty: 1.2
+  max_length: 32
+  temperature: 0.85
+  top_k: 40
+  top_p: 0.90
+  num_candidates: 40         # Generate this many, filter to top 10

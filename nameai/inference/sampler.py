@@ -1,8 +1,4 @@
-"""Sampling utilities.
-
-With HuggingFace Transformers, sampling is handled by model.generate().
-This module provides utility functions for custom sampling needs.
-"""
+"""Sampling utilities for autoregressive character-level decoding."""
 
 from __future__ import annotations
 

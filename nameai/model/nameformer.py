@@ -1,100 +1,81 @@
-"""NameFormer: Flan-T5-Small fine-tuned for creative brand name generation.
+"""NameFormer: custom encoder-decoder trained from scratch.
 
-Instead of training a transformer from scratch, we fine-tune Google's
-Flan-T5-Small (77M params) which already understands English. We only
-need to teach it the mapping: description → creative brand name.
+Phase 1: Pre-train encoder on Wikipedia (learns English)
+Phase 2: Fine-tune full model on (description → brand name) pairs
 """
 
 from __future__ import annotations
 
-from pathlib import Path
-
 import torch
-from transformers import T5ForConditionalGeneration, T5Tokenizer
+import torch.nn as nn
+
+from nameai.model.decoder import NameDecoder
+from nameai.model.encoder import DescriptionEncoder
 
 
-BASE_MODEL = "google/flan-t5-small"
-PROMPT_PREFIX = "Generate a creative brand name for: "
-
-
-class NameFormer:
-    """Wrapper around fine-tuned Flan-T5 for name generation."""
-
+class NameFormer(nn.Module):
     def __init__(
         self,
-        model: T5ForConditionalGeneration,
-        tokenizer: T5Tokenizer,
-        device: torch.device | str = "cpu",
+        enc_vocab_size: int = 16000,
+        enc_d_model: int = 512,
+        enc_n_heads: int = 8,
+        enc_n_layers: int = 10,
+        enc_d_ff: int = 2816,
+        enc_max_seq_len: int = 512,
+        dec_vocab_size: int = 76,
+        dec_d_model: int = 384,
+        dec_n_heads: int = 6,
+        dec_n_layers: int = 7,
+        dec_d_ff: int = 1792,
+        dec_max_seq_len: int = 64,
+        dropout: float = 0.1,
     ) -> None:
-        self.device = torch.device(device) if isinstance(device, str) else device
-        self.model = model.to(self.device)
-        self.tokenizer = tokenizer
+        super().__init__()
+
+        self.encoder = DescriptionEncoder(
+            vocab_size=enc_vocab_size, d_model=enc_d_model, n_heads=enc_n_heads,
+            n_layers=enc_n_layers, d_ff=enc_d_ff, max_seq_len=enc_max_seq_len, dropout=dropout,
+        )
+        self.decoder = NameDecoder(
+            vocab_size=dec_vocab_size, d_model=dec_d_model, d_enc=enc_d_model,
+            n_heads=dec_n_heads, n_layers=dec_n_layers, d_ff=dec_d_ff,
+            max_seq_len=dec_max_seq_len, dropout=dropout,
+        )
+
+        # MLM head for pre-training (predicts masked BPE tokens)
+        self.mlm_head = nn.Linear(enc_d_model, enc_vocab_size, bias=False)
+        self.mlm_head.weight = self.encoder.embedding.weight  # Tie weights
+
+    def forward(self, src_ids, tgt_ids, src_padding_mask=None):
+        """Full encoder-decoder forward for name generation fine-tuning."""
+        encoder_out = self.encoder(src_ids, src_padding_mask)
+        logits = self.decoder(tgt_ids, encoder_out, src_padding_mask)
+        return logits
+
+    def forward_mlm(self, token_ids, padding_mask=None):
+        """Encoder-only forward for masked language model pre-training."""
+        encoder_out = self.encoder(token_ids, padding_mask)
+        return self.mlm_head(encoder_out)
+
+    def encode(self, src_ids, src_padding_mask=None):
+        return self.encoder(src_ids, src_padding_mask)
+
+    def decode_step(self, tgt_ids, encoder_out, encoder_mask=None):
+        logits = self.decoder(tgt_ids, encoder_out, encoder_mask)
+        return logits[:, -1, :]
+
+    def count_parameters(self):
+        enc = sum(p.numel() for p in self.encoder.parameters())
+        dec = sum(p.numel() for p in self.decoder.parameters())
+        total = sum(p.numel() for p in self.parameters())
+        return {"encoder": enc, "decoder": dec, "total": total}
+
+    def save(self, path: str) -> None:
+        torch.save(self.state_dict(), path)
 
     @classmethod
-    def from_pretrained(cls, path: str = BASE_MODEL, device: str = "auto") -> "NameFormer":
-        """Load from a HuggingFace model ID or local checkpoint directory."""
-        if device == "auto":
-            device = "cuda" if torch.cuda.is_available() else "cpu"
-        tokenizer = T5Tokenizer.from_pretrained(path)
-        model = T5ForConditionalGeneration.from_pretrained(path)
-        return cls(model, tokenizer, device)
-
-    def save(self, path: str | Path) -> None:
-        """Save model and tokenizer to a directory."""
-        path = Path(path)
-        path.mkdir(parents=True, exist_ok=True)
-        self.model.save_pretrained(path)
-        self.tokenizer.save_pretrained(path)
-
-    def generate_names(
-        self,
-        description: str,
-        num_return: int = 10,
-        max_length: int = 32,
-        temperature: float = 0.9,
-        top_k: int = 50,
-        top_p: float = 0.92,
-        num_beams: int = 1,
-        do_sample: bool = True,
-        repetition_penalty: float = 1.2,
-    ) -> list[str]:
-        """Generate brand name candidates for a business description."""
-        prompt = PROMPT_PREFIX + description
-        inputs = self.tokenizer(prompt, return_tensors="pt", truncation=True, max_length=256)
-        inputs = {k: v.to(self.device) for k, v in inputs.items()}
-
-        # Generate more candidates than needed to allow filtering
-        num_candidates = num_return * 4
-
-        with torch.no_grad():
-            outputs = self.model.generate(
-                **inputs,
-                max_new_tokens=max_length,
-                num_return_sequences=num_candidates,
-                temperature=temperature,
-                top_k=top_k,
-                top_p=top_p,
-                num_beams=num_beams,
-                do_sample=do_sample,
-                repetition_penalty=repetition_penalty,
-            )
-
-        names = []
-        for output in outputs:
-            text = self.tokenizer.decode(output, skip_special_tokens=True).strip()
-            if text and text not in names:
-                names.append(text)
-
-        return names
-
-    def count_parameters(self) -> dict[str, int]:
-        """Count model parameters."""
-        total = sum(p.numel() for p in self.model.parameters())
-        trainable = sum(p.numel() for p in self.model.parameters() if p.requires_grad)
-        return {"total": total, "trainable": trainable}
-
-    def train_mode(self) -> None:
-        self.model.train()
-
-    def eval_mode(self) -> None:
-        self.model.eval()
+    def load(cls, path: str, device: str = "cpu", **kwargs) -> "NameFormer":
+        model = cls(**kwargs)
+        state = torch.load(path, map_location=device, weights_only=True)
+        model.load_state_dict(state)
+        return model.to(device)
