@@ -1,20 +1,25 @@
-"""Phase 2: Fine-tune the pre-trained NameFormer on (description → brand name) pairs.
+"""Phase 2: Fine-tune the pre-trained NameFormer on (description -> brand name) pairs.
 
-Usage:
-    python -m nameai.training.trainer [--pretrained checkpoints/pretrained.pt]
+Supports multi-GPU via torchrun:
+    torchrun --nproc_per_node=4 -m nameai.training.trainer
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import math
+import os
 import time
 from pathlib import Path
 
 import torch
+import torch.distributed as dist
 import torch.nn as nn
 import torch.nn.functional as F
+from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data import DataLoader, Dataset
+from torch.utils.data.distributed import DistributedSampler
 from tqdm import tqdm
 
 from nameai.model.nameformer import NameFormer
@@ -72,21 +77,26 @@ def main() -> None:
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--lr", type=float, default=5e-4)
     parser.add_argument("--save-dir", type=str, default="checkpoints")
-    parser.add_argument("--device", type=str, default="auto")
     args = parser.parse_args()
 
-    if args.device == "auto":
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # DDP setup
+    distributed = "RANK" in os.environ
+    if distributed:
+        dist.init_process_group("nccl")
+        rank = dist.get_rank()
+        world_size = dist.get_world_size()
+        device = torch.device(f"cuda:{rank}")
+        torch.cuda.set_device(device)
     else:
-        device = torch.device(args.device)
+        rank = 0
+        world_size = 1
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     use_bf16 = device.type == "cuda" and torch.cuda.is_bf16_supported()
 
-    # Tokenizers
     bpe_tok = BPETokenizer(args.bpe_model)
     char_tok = CharTokenizer()
 
-    # Model
     model = NameFormer(
         enc_vocab_size=bpe_tok.vocab_size,
         dec_vocab_size=char_tok.vocab_size,
@@ -94,30 +104,38 @@ def main() -> None:
 
     # Load pre-trained weights
     if Path(args.pretrained).exists():
-        print(f"Loading pre-trained weights from {args.pretrained}")
+        if rank == 0:
+            print(f"Loading pre-trained weights from {args.pretrained}")
         state = torch.load(args.pretrained, map_location=device, weights_only=True)
         model.load_state_dict(state, strict=False)
-    else:
+    elif rank == 0:
         print("WARNING: No pre-trained weights found. Training from scratch.")
 
-    params = model.count_parameters()
-    print(f"Model: {params['total']:,} params")
+    if distributed:
+        model = DDP(model, device_ids=[rank])
+    raw_model = model.module if distributed else model
 
-    # Data
+    if rank == 0:
+        params = raw_model.count_parameters()
+        print(f"Model: {params['total']:,} params")
+        print(f"GPUs: {world_size}, Batch/GPU: {args.batch_size}, Effective batch: {args.batch_size * world_size}")
+
     train_ds = NameDataset(args.train_data, bpe_tok, char_tok)
-    train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=True,
-                              num_workers=4, pin_memory=True, drop_last=True)
+    train_sampler = DistributedSampler(train_ds, num_replicas=world_size, rank=rank, shuffle=True) if distributed else None
+    train_loader = DataLoader(train_ds, batch_size=args.batch_size, shuffle=(train_sampler is None),
+                              sampler=train_sampler, num_workers=4, pin_memory=True, drop_last=True)
 
     val_loader = None
     if Path(args.val_data).exists():
         val_ds = NameDataset(args.val_data, bpe_tok, char_tok)
+        val_sampler = DistributedSampler(val_ds, num_replicas=world_size, rank=rank, shuffle=False) if distributed else None
         val_loader = DataLoader(val_ds, batch_size=args.batch_size, shuffle=False,
-                                num_workers=4, pin_memory=True)
+                                sampler=val_sampler, num_workers=4, pin_memory=True)
 
-    print(f"Train: {len(train_ds):,} examples, {len(train_loader)} batches/epoch")
+    if rank == 0:
+        print(f"Train: {len(train_ds):,} examples, {len(train_loader)} batches/epoch")
 
-    # Optimizer
-    optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr,
+    optimizer = torch.optim.AdamW(raw_model.parameters(), lr=args.lr,
                                    betas=(0.9, 0.98), weight_decay=0.01)
 
     total_steps = len(train_loader) * args.epochs
@@ -126,7 +144,6 @@ def main() -> None:
     def lr_lambda(step):
         if step < warmup_steps:
             return step / max(1, warmup_steps)
-        import math
         progress = (step - warmup_steps) / max(1, total_steps - warmup_steps)
         return 0.01 + 0.99 * 0.5 * (1 + math.cos(math.pi * min(progress, 1.0)))
 
@@ -136,16 +153,19 @@ def main() -> None:
     save_dir.mkdir(parents=True, exist_ok=True)
     best_val_loss = float("inf")
 
-    print(f"\nFine-tuning on {device} ({'BF16' if use_bf16 else 'FP32'})")
-    print(f"Batch: {args.batch_size}, LR: {args.lr}, Epochs: {args.epochs}\n")
+    if rank == 0:
+        print(f"\nFine-tuning on {world_size}x GPU ({'BF16' if use_bf16 else 'FP32'})")
+        print(f"Batch: {args.batch_size}, LR: {args.lr}, Epochs: {args.epochs}\n")
 
     start_time = time.time()
     global_step = 0
 
     for epoch in range(args.epochs):
+        if train_sampler:
+            train_sampler.set_epoch(epoch)
         model.train()
         epoch_loss = 0.0
-        pbar = tqdm(train_loader, desc=f"Epoch {epoch + 1}/{args.epochs}")
+        pbar = tqdm(train_loader, desc=f"Epoch {epoch + 1}/{args.epochs}", disable=(rank != 0))
 
         for batch in pbar:
             src_ids = batch["src_ids"].to(device)
@@ -155,10 +175,8 @@ def main() -> None:
             quality = batch["quality"].to(device)
 
             optimizer.zero_grad()
-
-            with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
-                logits = model(src_ids, tgt_ids, src_mask)
-                # Per-token loss
+            with torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=use_bf16):
+                logits = raw_model(src_ids, tgt_ids, src_mask)
                 loss_flat = F.cross_entropy(
                     logits.view(-1, logits.size(-1)),
                     tgt_labels.view(-1),
@@ -167,36 +185,39 @@ def main() -> None:
                     reduction="none",
                 ).view(logits.size(0), -1)
 
-                # Quality-weighted mean
                 mask = tgt_labels != 0
                 per_example = (loss_flat * mask).sum(1) / mask.sum(1).clamp(min=1)
                 loss = (per_example * quality.pow(2.0)).mean()
 
             loss.backward()
-            nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            nn.utils.clip_grad_norm_(raw_model.parameters(), 1.0)
             optimizer.step()
             scheduler.step()
 
             epoch_loss += loss.item()
             global_step += 1
-            pbar.set_postfix(loss=f"{loss.item():.4f}")
+            if rank == 0:
+                pbar.set_postfix(loss=f"{loss.item():.4f}")
 
         avg_loss = epoch_loss / len(train_loader)
 
-        # Validation
         val_msg = ""
         if val_loader:
-            val_loss = evaluate(model, val_loader, device, use_bf16)
+            val_loss = evaluate(raw_model, val_loader, device, use_bf16)
             val_msg = f", val_loss={val_loss:.4f}"
-            if val_loss < best_val_loss:
+            if rank == 0 and val_loss < best_val_loss:
                 best_val_loss = val_loss
-                model.save(str(save_dir / "best.pt"))
+                raw_model.save(str(save_dir / "best.pt"))
 
-        elapsed = time.time() - start_time
-        print(f"  Epoch {epoch + 1}: loss={avg_loss:.4f}{val_msg}, elapsed={elapsed:.0f}s")
+        if rank == 0:
+            print(f"  Epoch {epoch + 1}: loss={avg_loss:.4f}{val_msg}, elapsed={time.time() - start_time:.0f}s")
 
-    model.save(str(save_dir / "final.pt"))
-    print(f"\nFine-tuning done in {time.time() - start_time:.0f}s")
+    if rank == 0:
+        raw_model.save(str(save_dir / "final.pt"))
+        print(f"\nFine-tuning done in {time.time() - start_time:.0f}s")
+
+    if distributed:
+        dist.destroy_process_group()
 
 
 @torch.no_grad()
@@ -209,7 +230,7 @@ def evaluate(model, loader, device, use_bf16):
         tgt_ids = batch["tgt_ids"].to(device)
         tgt_labels = batch["tgt_labels"].to(device)
 
-        with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=use_bf16):
+        with torch.autocast(device_type="cuda", dtype=torch.bfloat16, enabled=use_bf16):
             logits = model(src_ids, tgt_ids, src_mask)
             loss = F.cross_entropy(logits.view(-1, logits.size(-1)),
                                    tgt_labels.view(-1), ignore_index=0)
