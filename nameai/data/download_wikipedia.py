@@ -30,7 +30,7 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     print("Downloading English Wikipedia (this takes a few minutes)...")
-    ds = load_dataset("wikipedia", "20220301.en", split="train", trust_remote_code=True)
+    ds = load_dataset("wikimedia/wikipedia", "20231101.en", split="train")
 
     text_path = output_dir / "wiki_text.txt"
     chunk_count = 0
